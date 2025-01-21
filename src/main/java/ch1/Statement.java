@@ -24,14 +24,7 @@ public class Statement {
 		var result = String.format("청구 내역 (고객명: %s)%n", invoice.customer());
 		var format = NumberFormat.getCurrencyInstance(Locale.US);
 		for (var perf : invoice.performances()) {
-
-			// 포인트 적립
-			volumeCredits += Math.max(perf.audience() - 30, 0);
-
-			// 희극 관객 5명마다 추가 포인트 제공
-			if ("comedy".equals(playFor(perf).type())) {
-				volumeCredits += perf.audience() / 5;
-			}
+			volumeCredits += volumeCreditsFor(perf);
 
 			// 청구 내역 출력
 			result += String.format(" %s: %s (%s석)%n",
@@ -44,6 +37,15 @@ public class Statement {
 		result += String.format("총액: %s%n", format.format(totalAmount / 100));
 		result += String.format("적립 포인트: %s점%n", volumeCredits);
 		return result;
+	}
+
+	private int volumeCreditsFor(Performance performance) {
+		var volumeCredits = 0;
+		volumeCredits += Math.max(performance.audience() - 30, 0);
+		if ("comedy".equals(playFor(performance).type())) {
+			volumeCredits += performance.audience() / 5;
+		}
+		return volumeCredits;
 	}
 
 	private Play playFor(Performance perf) {
