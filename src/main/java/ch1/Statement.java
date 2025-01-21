@@ -30,6 +30,7 @@ public class Statement {
 
 	private Performance enrichPerformance(Performance performance) {
 		var result = performance.copy();
+		result.setPlay(playFor(result));
 		return result;
 	}
 
@@ -38,9 +39,9 @@ public class Statement {
 		for (var perf : data.performances()) {
 			// 청구 내역 출력
 			result += String.format(" %s: %s (%s석)%n",
-				playFor(perf).name(),
+				perf.getPlay().name(),
 				usd(amountFor(perf)),
-				perf.audience()
+				perf.getAudience()
 			);
 		}
 		result += String.format("총액: %s%n", usd(totalAmount()));
@@ -50,35 +51,35 @@ public class Statement {
 
 	private int volumeCreditsFor(Performance performance) {
 		var result = 0;
-		result += Math.max(performance.audience() - 30, 0);
-		if ("comedy".equals(playFor(performance).type())) {
-			result += performance.audience() / 5;
+		result += Math.max(performance.getAudience() - 30, 0);
+		if ("comedy".equals(performance.getPlay().type())) {
+			result += performance.getAudience() / 5;
 		}
 		return result;
 	}
 
 	private Play playFor(Performance performance) {
-		return plays.get(performance.playID());
+		return plays.get(performance.getPlayID());
 	}
 
 	private int amountFor(Performance performance) {
 		var result = 0;
-		switch (playFor(performance).type()) {
+		switch (performance.getPlay().type()) {
 			case "tragedy":
 				result = 40000;
-				if (performance.audience() > 30) {
-					result += 1000 * (performance.audience() - 30);
+				if (performance.getAudience() > 30) {
+					result += 1000 * (performance.getAudience() - 30);
 				}
 				break;
 			case "comedy":
 				result = 30000;
-				if (performance.audience() > 20) {
-					result += 10000 + 500 * (performance.audience() - 20);
+				if (performance.getAudience() > 20) {
+					result += 10000 + 500 * (performance.getAudience() - 20);
 				}
-				result += 300 * performance.audience();
+				result += 300 * performance.getAudience();
 				break;
 			default:
-				throw new IllegalArgumentException("알 수 없는 장르: " + playFor(performance).type());
+				throw new IllegalArgumentException("알 수 없는 장르: " + performance.getPlay().type());
 		}
 		return result;
 	}
