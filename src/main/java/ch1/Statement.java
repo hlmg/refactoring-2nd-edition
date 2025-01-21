@@ -22,19 +22,18 @@ public class Statement {
 		var totalAmount = 0;
 		var volumeCredits = 0;
 		var result = String.format("청구 내역 (고객명: %s)%n", invoice.customer());
-		var format = NumberFormat.getCurrencyInstance(Locale.US);
 		for (var perf : invoice.performances()) {
 			volumeCredits += volumeCreditsFor(perf);
 
 			// 청구 내역 출력
 			result += String.format(" %s: %s (%s석)%n",
 				playFor(perf).name(),
-				format.format(amountFor(perf) / 100),
+				format(amountFor(perf) / 100),
 				perf.audience()
 			);
 			totalAmount += amountFor(perf);
 		}
-		result += String.format("총액: %s%n", format.format(totalAmount / 100));
+		result += String.format("총액: %s%n", format(totalAmount / 100));
 		result += String.format("적립 포인트: %s점%n", volumeCredits);
 		return result;
 	}
@@ -72,6 +71,10 @@ public class Statement {
 				throw new IllegalArgumentException("알 수 없는 장르: " + playFor(performance).type());
 		}
 		return result;
+	}
+
+	private String format(int number) {
+		return NumberFormat.getCurrencyInstance(Locale.US).format(number);
 	}
 
 }
