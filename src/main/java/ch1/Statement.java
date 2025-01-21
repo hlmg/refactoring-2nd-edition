@@ -20,7 +20,6 @@ public class Statement {
 
 	public String statement() {
 		var totalAmount = 0;
-		var volumeCredits = 0;
 		var result = String.format("청구 내역 (고객명: %s)%n", invoice.customer());
 		for (var perf : invoice.performances()) {
 			// 청구 내역 출력
@@ -31,6 +30,7 @@ public class Statement {
 			);
 			totalAmount += amountFor(perf);
 		}
+		var volumeCredits = 0;
 		for (var perf : invoice.performances()) {
 			volumeCredits += volumeCreditsFor(perf);
 		}
