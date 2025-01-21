@@ -20,7 +20,8 @@ public class Statement {
 	}
 
 	public String statement() {
-		return renderPlainText(createStatementData());
+		StatementRenderer statementRenderer = new StatementRenderer(createStatementData());
+		return statementRenderer.renderPlainText();
 	}
 
 	private StatementData createStatementData() {
@@ -37,21 +38,6 @@ public class Statement {
 		result.setPlay(playFor(result));
 		result.setAmount(amountFor(result));
 		result.setVolumeCredits(volumeCreditsFor(result));
-		return result;
-	}
-
-	private String renderPlainText(StatementData data) {
-		var result = String.format("청구 내역 (고객명: %s)%n", data.getCustomer());
-		for (var perf : data.getPerformances()) {
-			// 청구 내역 출력
-			result += String.format(" %s: %s (%s석)%n",
-				perf.getPlay().name(),
-				usd(perf.getAmount()),
-				perf.getAudience()
-			);
-		}
-		result += String.format("총액: %s%n", usd(data.getTotalAmount()));
-		result += String.format("적립 포인트: %s점%n", data.getTotalVolumeCredits());
 		return result;
 	}
 
@@ -90,10 +76,6 @@ public class Statement {
 		return result;
 	}
 
-	private String usd(int number) {
-		return NumberFormat.getCurrencyInstance(Locale.US).format(number / 100);
-	}
-
 	private int totalAmount(StatementData data) {
 		return data.getPerformances().stream()
 			.mapToInt(Performance::getAmount)
@@ -104,6 +86,35 @@ public class Statement {
 		return data.getPerformances().stream()
 			.mapToInt(Performance::getVolumeCredits)
 			.sum();
+	}
+
+	private static class StatementRenderer {
+
+		StatementData statementData;
+
+		public StatementRenderer(StatementData statementData) {
+			this.statementData = statementData;
+		}
+
+		public String renderPlainText() {
+			var result = String.format("청구 내역 (고객명: %s)%n", statementData.getCustomer());
+			for (var perf : statementData.getPerformances()) {
+				// 청구 내역 출력
+				result += String.format(" %s: %s (%s석)%n",
+					perf.getPlay().name(),
+					usd(perf.getAmount()),
+					perf.getAudience()
+				);
+			}
+			result += String.format("총액: %s%n", usd(statementData.getTotalAmount()));
+			result += String.format("적립 포인트: %s점%n", statementData.getTotalVolumeCredits());
+			return result;
+		}
+
+		private String usd(int number) {
+			return NumberFormat.getCurrencyInstance(Locale.US).format(number / 100);
+		}
+
 	}
 
 }
