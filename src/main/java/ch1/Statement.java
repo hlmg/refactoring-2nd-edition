@@ -92,19 +92,15 @@ public class Statement {
 	}
 
 	private int totalAmount(StatementData data) {
-		var result = 0;
-		for (var perf : data.getPerformances()) {
-			result += perf.getAmount();
-		}
-		return result;
+		return data.getPerformances().stream()
+			.mapToInt(Performance::getAmount)
+			.sum();
 	}
 
 	private int totalVolumeCredits(StatementData data) {
-		var result = 0;
-		for (var perf : data.getPerformances()) {
-			result += perf.getVolumeCredits();
-		}
-		return result;
+		return data.getPerformances().stream()
+			.mapToInt(Performance::getVolumeCredits)
+			.sum();
 	}
 
 }
