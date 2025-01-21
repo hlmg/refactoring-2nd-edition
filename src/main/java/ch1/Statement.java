@@ -30,9 +30,8 @@ public class Statement {
 			);
 			totalAmount += amountFor(perf);
 		}
-		var volumeCredits = totalVolumeCredits();
 		result += String.format("총액: %s%n", usd(totalAmount));
-		result += String.format("적립 포인트: %s점%n", volumeCredits);
+		result += String.format("적립 포인트: %s점%n", totalVolumeCredits());
 		return result;
 	}
 
