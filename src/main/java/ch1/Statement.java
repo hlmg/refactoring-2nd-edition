@@ -1,6 +1,7 @@
 package ch1;
 
 import ch1.data.Invoice;
+import ch1.data.Performance;
 import ch1.data.Play;
 
 import java.text.NumberFormat;
@@ -15,25 +16,8 @@ public class Statement {
 		var result = String.format("청구 내역 (고객명: %s)%n", invoice.customer());
 		var format = NumberFormat.getCurrencyInstance(Locale.US);
 		for (var perf : invoice.performances()) {
-			Play play = plays.get(perf.playID());
-			var thisAmount = 0;
-			switch (play.type()) {
-				case "tragedy":
-					thisAmount = 40000;
-					if (perf.audience() > 30) {
-						thisAmount += 1000 * (perf.audience() - 30);
-					}
-					break;
-				case "comedy":
-					thisAmount = 30000;
-					if (perf.audience() > 20) {
-						thisAmount += 10000 + 500 * (perf.audience() - 20);
-					}
-					thisAmount += 300 * perf.audience();
-					break;
-				default:
-					throw new IllegalArgumentException("알 수 없는 장르: " + play.type());
-			}
+			var play = plays.get(perf.playID());
+			var thisAmount = amountFor(perf, play);
 
 			// 포인트 적립
 			volumeCredits += Math.max(perf.audience() - 30, 0);
@@ -54,6 +38,28 @@ public class Statement {
 		result += String.format("총액: %s%n", format.format(totalAmount / 100));
 		result += String.format("적립 포인트: %s점%n", volumeCredits);
 		return result;
+	}
+
+	private int amountFor(Performance perf, Play play) {
+		var thisAmount = 0;
+		switch (play.type()) {
+			case "tragedy":
+				thisAmount = 40000;
+				if (perf.audience() > 30) {
+					thisAmount += 1000 * (perf.audience() - 30);
+				}
+				break;
+			case "comedy":
+				thisAmount = 30000;
+				if (perf.audience() > 20) {
+					thisAmount += 10000 + 500 * (perf.audience() - 20);
+				}
+				thisAmount += 300 * perf.audience();
+				break;
+			default:
+				throw new IllegalArgumentException("알 수 없는 장르: " + play.type());
+		}
+		return thisAmount;
 	}
 
 }
