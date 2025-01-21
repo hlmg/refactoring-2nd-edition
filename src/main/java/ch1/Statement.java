@@ -3,9 +3,9 @@ package ch1;
 import ch1.data.Invoice;
 import ch1.data.Performance;
 import ch1.data.Play;
+import ch1.data.StatementData;
 
 import java.text.NumberFormat;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -21,10 +21,11 @@ public class Statement {
 	}
 
 	public String statement() {
-		data = new StatementData(
-			invoice.customer(),
-			invoice.performances().stream().map(this::enrichPerformance).toList()
-		);
+		data = new StatementData();
+		data.setCustomer(invoice.customer());
+		data.setPerformances(invoice.performances().stream().map(this::enrichPerformance).toList());
+		data.setTotalAmount(totalAmount(data));
+		data.setTotalVolumeCredits(totalVolumeCredits(data));
 		return renderPlainText();
 	}
 
@@ -37,8 +38,8 @@ public class Statement {
 	}
 
 	private String renderPlainText() {
-		var result = String.format("청구 내역 (고객명: %s)%n", data.customer());
-		for (var perf : data.performances()) {
+		var result = String.format("청구 내역 (고객명: %s)%n", data.getCustomer());
+		for (var perf : data.getPerformances()) {
 			// 청구 내역 출력
 			result += String.format(" %s: %s (%s석)%n",
 				perf.getPlay().name(),
@@ -46,8 +47,8 @@ public class Statement {
 				perf.getAudience()
 			);
 		}
-		result += String.format("총액: %s%n", usd(totalAmount()));
-		result += String.format("적립 포인트: %s점%n", totalVolumeCredits());
+		result += String.format("총액: %s%n", usd(totalAmount(data)));
+		result += String.format("적립 포인트: %s점%n", totalVolumeCredits(data));
 		return result;
 	}
 
@@ -90,25 +91,20 @@ public class Statement {
 		return NumberFormat.getCurrencyInstance(Locale.US).format(number / 100);
 	}
 
-	private int totalAmount() {
+	private int totalAmount(StatementData data) {
 		var result = 0;
-		for (var perf : data.performances()) {
+		for (var perf : data.getPerformances()) {
 			result += perf.getAmount();
 		}
 		return result;
 	}
 
-	private int totalVolumeCredits() {
+	private int totalVolumeCredits(StatementData data) {
 		var result = 0;
-		for (var perf : data.performances()) {
+		for (var perf : data.getPerformances()) {
 			result += perf.getVolumeCredits();
 		}
 		return result;
 	}
-
-	private record StatementData(
-		String customer,
-		List<Performance> performances
-	) {}
 
 }
