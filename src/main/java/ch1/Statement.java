@@ -23,8 +23,6 @@ public class Statement {
 		var volumeCredits = 0;
 		var result = String.format("청구 내역 (고객명: %s)%n", invoice.customer());
 		for (var perf : invoice.performances()) {
-			volumeCredits += volumeCreditsFor(perf);
-
 			// 청구 내역 출력
 			result += String.format(" %s: %s (%s석)%n",
 				playFor(perf).name(),
@@ -32,6 +30,9 @@ public class Statement {
 				perf.audience()
 			);
 			totalAmount += amountFor(perf);
+		}
+		for (var perf : invoice.performances()) {
+			volumeCredits += volumeCreditsFor(perf);
 		}
 		result += String.format("총액: %s%n", usd(totalAmount));
 		result += String.format("적립 포인트: %s점%n", volumeCredits);
