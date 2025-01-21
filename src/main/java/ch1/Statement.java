@@ -13,7 +13,6 @@ public class Statement {
 
 	Map<String, Play> plays;
 	Invoice invoice;
-	StatementData data;
 
 	public Statement(Map<String, Play> plays, Invoice invoice) {
 		this.plays = plays;
@@ -21,12 +20,16 @@ public class Statement {
 	}
 
 	public String statement() {
-		data = new StatementData();
+		return renderPlainText(createStatementData());
+	}
+
+	private StatementData createStatementData() {
+		StatementData data = new StatementData();
 		data.setCustomer(invoice.customer());
 		data.setPerformances(invoice.performances().stream().map(this::enrichPerformance).toList());
 		data.setTotalAmount(totalAmount(data));
 		data.setTotalVolumeCredits(totalVolumeCredits(data));
-		return renderPlainText();
+		return data;
 	}
 
 	private Performance enrichPerformance(Performance performance) {
@@ -37,7 +40,7 @@ public class Statement {
 		return result;
 	}
 
-	private String renderPlainText() {
+	private String renderPlainText(StatementData data) {
 		var result = String.format("청구 내역 (고객명: %s)%n", data.getCustomer());
 		for (var perf : data.getPerformances()) {
 			// 청구 내역 출력
