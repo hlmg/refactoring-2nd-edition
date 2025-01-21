@@ -34,16 +34,16 @@ public class Statement {
 	}
 
 	private int volumeCreditsFor(Performance performance) {
-		var volumeCredits = 0;
-		volumeCredits += Math.max(performance.audience() - 30, 0);
+		var result = 0;
+		result += Math.max(performance.audience() - 30, 0);
 		if ("comedy".equals(playFor(performance).type())) {
-			volumeCredits += performance.audience() / 5;
+			result += performance.audience() / 5;
 		}
-		return volumeCredits;
+		return result;
 	}
 
-	private Play playFor(Performance perf) {
-		return plays.get(perf.playID());
+	private Play playFor(Performance performance) {
+		return plays.get(performance.playID());
 	}
 
 	private int amountFor(Performance performance) {
@@ -81,11 +81,11 @@ public class Statement {
 	}
 
 	private int totalVolumeCredits() {
-		var volumeCredits = 0;
+		var result = 0;
 		for (var perf : invoice.performances()) {
-			volumeCredits += volumeCreditsFor(perf);
+			result += volumeCreditsFor(perf);
 		}
-		return volumeCredits;
+		return result;
 	}
 
 }
