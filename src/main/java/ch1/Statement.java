@@ -23,9 +23,14 @@ public class Statement {
 	public String statement() {
 		data = new StatementData(
 			invoice.customer(),
-			invoice.performances()
+			invoice.performances().stream().map(this::enrichPerformance).toList()
 		);
 		return renderPlainText();
+	}
+
+	private Performance enrichPerformance(Performance performance) {
+		var result = performance.copy();
+		return result;
 	}
 
 	private String renderPlainText() {
