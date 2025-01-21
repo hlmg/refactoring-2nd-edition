@@ -24,20 +24,19 @@ public class Statement {
 		var result = String.format("청구 내역 (고객명: %s)%n", invoice.customer());
 		var format = NumberFormat.getCurrencyInstance(Locale.US);
 		for (var perf : invoice.performances()) {
-			var play = playFor(perf);
-			var thisAmount = amountFor(perf, play);
+			var thisAmount = amountFor(perf, playFor(perf));
 
 			// 포인트 적립
 			volumeCredits += Math.max(perf.audience() - 30, 0);
 
 			// 희극 관객 5명마다 추가 포인트 제공
-			if ("comedy".equals(play.type())) {
+			if ("comedy".equals(playFor(perf).type())) {
 				volumeCredits += perf.audience() / 5;
 			}
 
 			// 청구 내역 출력
 			result += String.format(" %s: %s (%s석)%n",
-				play.name(),
+				playFor(perf).name(),
 				format.format(thisAmount / 100),
 				perf.audience()
 			);
