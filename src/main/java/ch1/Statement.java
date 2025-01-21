@@ -24,7 +24,7 @@ public class Statement {
 		var result = String.format("청구 내역 (고객명: %s)%n", invoice.customer());
 		var format = NumberFormat.getCurrencyInstance(Locale.US);
 		for (var perf : invoice.performances()) {
-			var thisAmount = amountFor(perf, playFor(perf));
+			var thisAmount = amountFor(perf);
 
 			// 포인트 적립
 			volumeCredits += Math.max(perf.audience() - 30, 0);
@@ -51,9 +51,9 @@ public class Statement {
 		return plays.get(perf.playID());
 	}
 
-	private int amountFor(Performance performance, Play play) {
+	private int amountFor(Performance performance) {
 		var result = 0;
-		switch (play.type()) {
+		switch (playFor(performance).type()) {
 			case "tragedy":
 				result = 40000;
 				if (performance.audience() > 30) {
@@ -68,7 +68,7 @@ public class Statement {
 				result += 300 * performance.audience();
 				break;
 			default:
-				throw new IllegalArgumentException("알 수 없는 장르: " + play.type());
+				throw new IllegalArgumentException("알 수 없는 장르: " + playFor(performance).type());
 		}
 		return result;
 	}
