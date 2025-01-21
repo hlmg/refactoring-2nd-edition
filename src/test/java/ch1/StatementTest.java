@@ -31,8 +31,8 @@ class StatementTest {
 
 	@Test
 	void statement() {
-		Statement statement = new Statement();
-		String result = statement.statement(invoices.get(0), plays);
+		Statement statement = new Statement(plays, invoices.get(0));
+		String result = statement.statement();
 		Assertions.assertThat(result).isEqualTo("""
 			청구 내역 (고객명: BigCo)
 			 Hamlet: $650.00 (55석)

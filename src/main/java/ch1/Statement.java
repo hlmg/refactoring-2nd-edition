@@ -10,13 +10,21 @@ import java.util.Map;
 
 public class Statement {
 
-	public String statement(Invoice invoice, Map<String, Play> plays) {
+	Map<String, Play> plays;
+	Invoice invoice;
+
+	public Statement(Map<String, Play> plays, Invoice invoice) {
+		this.plays = plays;
+		this.invoice = invoice;
+	}
+
+	public String statement() {
 		var totalAmount = 0;
 		var volumeCredits = 0;
 		var result = String.format("청구 내역 (고객명: %s)%n", invoice.customer());
 		var format = NumberFormat.getCurrencyInstance(Locale.US);
 		for (var perf : invoice.performances()) {
-			var play = plays.get(perf.playID());
+			var play = playFor(perf);
 			var thisAmount = amountFor(perf, play);
 
 			// 포인트 적립
@@ -38,6 +46,10 @@ public class Statement {
 		result += String.format("총액: %s%n", format.format(totalAmount / 100));
 		result += String.format("적립 포인트: %s점%n", volumeCredits);
 		return result;
+	}
+
+	private Play playFor(Performance perf) {
+		return plays.get(perf.playID());
 	}
 
 	private int amountFor(Performance performance, Play play) {
