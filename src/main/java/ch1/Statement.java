@@ -5,6 +5,7 @@ import ch1.data.Performance;
 import ch1.data.Play;
 
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ public class Statement {
 
 	Map<String, Play> plays;
 	Invoice invoice;
+	StatementData data;
 
 	public Statement(Map<String, Play> plays, Invoice invoice) {
 		this.plays = plays;
@@ -19,12 +21,16 @@ public class Statement {
 	}
 
 	public String statement() {
+		data = new StatementData(
+			invoice.customer(),
+			invoice.performances()
+		);
 		return renderPlainText();
 	}
 
 	private String renderPlainText() {
-		var result = String.format("청구 내역 (고객명: %s)%n", invoice.customer());
-		for (var perf : invoice.performances()) {
+		var result = String.format("청구 내역 (고객명: %s)%n", data.customer());
+		for (var perf : data.performances()) {
 			// 청구 내역 출력
 			result += String.format(" %s: %s (%s석)%n",
 				playFor(perf).name(),
@@ -78,7 +84,7 @@ public class Statement {
 
 	private int totalAmount() {
 		var result = 0;
-		for (var perf : invoice.performances()) {
+		for (var perf : data.performances()) {
 			result += amountFor(perf);
 		}
 		return result;
@@ -86,10 +92,15 @@ public class Statement {
 
 	private int totalVolumeCredits() {
 		var result = 0;
-		for (var perf : invoice.performances()) {
+		for (var perf : data.performances()) {
 			result += volumeCreditsFor(perf);
 		}
 		return result;
 	}
+
+	private record StatementData(
+		String customer,
+		List<Performance> performances
+	) {}
 
 }
