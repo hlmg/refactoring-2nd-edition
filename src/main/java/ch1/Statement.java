@@ -31,6 +31,8 @@ public class Statement {
 	private Performance enrichPerformance(Performance performance) {
 		var result = performance.copy();
 		result.setPlay(playFor(result));
+		result.setAmount(amountFor(result));
+		result.setVolumeCredits(volumeCreditsFor(result));
 		return result;
 	}
 
@@ -40,7 +42,7 @@ public class Statement {
 			// 청구 내역 출력
 			result += String.format(" %s: %s (%s석)%n",
 				perf.getPlay().name(),
-				usd(amountFor(perf)),
+				usd(perf.getAmount()),
 				perf.getAudience()
 			);
 		}
@@ -91,7 +93,7 @@ public class Statement {
 	private int totalAmount() {
 		var result = 0;
 		for (var perf : data.performances()) {
-			result += amountFor(perf);
+			result += perf.getAmount();
 		}
 		return result;
 	}
@@ -99,7 +101,7 @@ public class Statement {
 	private int totalVolumeCredits() {
 		var result = 0;
 		for (var perf : data.performances()) {
-			result += volumeCreditsFor(perf);
+			result += perf.getVolumeCredits();
 		}
 		return result;
 	}
