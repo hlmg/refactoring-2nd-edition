@@ -28,12 +28,12 @@ public class Statement {
 			// 청구 내역 출력
 			result += String.format(" %s: %s (%s석)%n",
 				playFor(perf).name(),
-				format(amountFor(perf) / 100),
+				usd(amountFor(perf)),
 				perf.audience()
 			);
 			totalAmount += amountFor(perf);
 		}
-		result += String.format("총액: %s%n", format(totalAmount / 100));
+		result += String.format("총액: %s%n", usd(totalAmount));
 		result += String.format("적립 포인트: %s점%n", volumeCredits);
 		return result;
 	}
@@ -73,8 +73,8 @@ public class Statement {
 		return result;
 	}
 
-	private String format(int number) {
-		return NumberFormat.getCurrencyInstance(Locale.US).format(number);
+	private String usd(int number) {
+		return NumberFormat.getCurrencyInstance(Locale.US).format(number / 100);
 	}
 
 }
