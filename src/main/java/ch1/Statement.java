@@ -24,7 +24,6 @@ public class Statement {
 		var result = String.format("청구 내역 (고객명: %s)%n", invoice.customer());
 		var format = NumberFormat.getCurrencyInstance(Locale.US);
 		for (var perf : invoice.performances()) {
-			var thisAmount = amountFor(perf);
 
 			// 포인트 적립
 			volumeCredits += Math.max(perf.audience() - 30, 0);
@@ -37,10 +36,10 @@ public class Statement {
 			// 청구 내역 출력
 			result += String.format(" %s: %s (%s석)%n",
 				playFor(perf).name(),
-				format.format(thisAmount / 100),
+				format.format(amountFor(perf) / 100),
 				perf.audience()
 			);
-			totalAmount += thisAmount;
+			totalAmount += amountFor(perf);
 		}
 		result += String.format("총액: %s%n", format.format(totalAmount / 100));
 		result += String.format("적립 포인트: %s점%n", volumeCredits);
