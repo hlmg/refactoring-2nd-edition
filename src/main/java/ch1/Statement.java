@@ -19,7 +19,6 @@ public class Statement {
 	}
 
 	public String statement() {
-		var totalAmount = 0;
 		var result = String.format("청구 내역 (고객명: %s)%n", invoice.customer());
 		for (var perf : invoice.performances()) {
 			// 청구 내역 출력
@@ -28,9 +27,8 @@ public class Statement {
 				usd(amountFor(perf)),
 				perf.audience()
 			);
-			totalAmount += amountFor(perf);
 		}
-		result += String.format("총액: %s%n", usd(totalAmount));
+		result += String.format("총액: %s%n", usd(totalAmount()));
 		result += String.format("적립 포인트: %s점%n", totalVolumeCredits());
 		return result;
 	}
@@ -72,6 +70,14 @@ public class Statement {
 
 	private String usd(int number) {
 		return NumberFormat.getCurrencyInstance(Locale.US).format(number / 100);
+	}
+
+	private int totalAmount() {
+		var result = 0;
+		for (var perf : invoice.performances()) {
+			result += amountFor(perf);
+		}
+		return result;
 	}
 
 	private int totalVolumeCredits() {
