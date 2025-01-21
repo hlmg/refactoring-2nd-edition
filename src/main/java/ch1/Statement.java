@@ -50,8 +50,8 @@ public class Statement {
 				perf.getAudience()
 			);
 		}
-		result += String.format("총액: %s%n", usd(totalAmount(data)));
-		result += String.format("적립 포인트: %s점%n", totalVolumeCredits(data));
+		result += String.format("총액: %s%n", usd(data.getTotalAmount()));
+		result += String.format("적립 포인트: %s점%n", data.getTotalVolumeCredits());
 		return result;
 	}
 
