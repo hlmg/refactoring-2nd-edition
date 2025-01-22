@@ -39,12 +39,20 @@ public class Statement {
 	}
 
 	private Performance enrichPerformance(Performance performance) {
-		var calculator = new PerformanceCalculator(performance, playFor(performance));
+		var calculator = createPerformanceCalculator(performance, playFor(performance));
 		var result = performance.copy();
 		result.setPlay(calculator.getPlay());
 		result.setAmount(calculator.amount());
 		result.setVolumeCredits(calculator.volumeCredits());
 		return result;
+	}
+
+	private PerformanceCalculator createPerformanceCalculator(Performance performance, Play play) {
+		return switch (play.type()) {
+			case "tragedy" -> new TragedyCalculator(performance, play);
+			case "comedy" -> new ComedyCalculator(performance, play);
+			default -> throw new IllegalArgumentException("알 수 없는 장르: " + play.type());
+		};
 	}
 
 	private Play playFor(Performance performance) {
