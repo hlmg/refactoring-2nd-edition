@@ -43,16 +43,7 @@ public class Statement {
 		var result = performance.copy();
 		result.setPlay(calculator.getPlay());
 		result.setAmount(calculator.amount());
-		result.setVolumeCredits(volumeCreditsFor(result));
-		return result;
-	}
-
-	private int volumeCreditsFor(Performance performance) {
-		var result = 0;
-		result += Math.max(performance.getAudience() - 30, 0);
-		if ("comedy".equals(performance.getPlay().type())) {
-			result += performance.getAudience() / 5;
-		}
+		result.setVolumeCredits(calculator.volumeCredits());
 		return result;
 	}
 
