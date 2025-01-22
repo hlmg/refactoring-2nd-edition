@@ -61,25 +61,7 @@ public class Statement {
 	}
 
 	private int amountFor(Performance performance) {
-		var result = 0;
-		switch (performance.getPlay().type()) {
-			case "tragedy":
-				result = 40000;
-				if (performance.getAudience() > 30) {
-					result += 1000 * (performance.getAudience() - 30);
-				}
-				break;
-			case "comedy":
-				result = 30000;
-				if (performance.getAudience() > 20) {
-					result += 10000 + 500 * (performance.getAudience() - 20);
-				}
-				result += 300 * performance.getAudience();
-				break;
-			default:
-				throw new IllegalArgumentException("알 수 없는 장르: " + performance.getPlay().type());
-		}
-		return result;
+		return new PerformanceCalculator(performance, playFor(performance)).amount();
 	}
 
 	private int totalAmount(StatementData data) {
