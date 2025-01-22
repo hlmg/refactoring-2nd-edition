@@ -42,7 +42,7 @@ public class Statement {
 		var calculator = new PerformanceCalculator(performance, playFor(performance));
 		var result = performance.copy();
 		result.setPlay(calculator.getPlay());
-		result.setAmount(amountFor(result));
+		result.setAmount(calculator.amount());
 		result.setVolumeCredits(volumeCreditsFor(result));
 		return result;
 	}
@@ -58,10 +58,6 @@ public class Statement {
 
 	private Play playFor(Performance performance) {
 		return plays.get(performance.getPlayID());
-	}
-
-	private int amountFor(Performance performance) {
-		return new PerformanceCalculator(performance, playFor(performance)).amount();
 	}
 
 	private int totalAmount(StatementData data) {
