@@ -14,21 +14,7 @@ public class PerformanceCalculator {
 	}
 
 	public int amount() {
-		var result = 0;
-		switch (play.type()) {
-			case "tragedy":
-				throw new IllegalStateException("오류 발생");
-			case "comedy":
-				result = 30000;
-				if (performance.getAudience() > 20) {
-					result += 10000 + 500 * (performance.getAudience() - 20);
-				}
-				result += 300 * performance.getAudience();
-				break;
-			default:
-				throw new IllegalArgumentException("알 수 없는 장르: " + play.type());
-		}
-		return result;
+		throw new UnsupportedOperationException("서브 클래스에서 처리");
 	}
 
 	public int volumeCredits() {
