@@ -39,8 +39,9 @@ public class Statement {
 	}
 
 	private Performance enrichPerformance(Performance performance) {
+		var calculator = new PerformanceCalculator(performance, playFor(performance));
 		var result = performance.copy();
-		result.setPlay(playFor(result));
+		result.setPlay(calculator.getPlay());
 		result.setAmount(amountFor(result));
 		result.setVolumeCredits(volumeCreditsFor(result));
 		return result;
