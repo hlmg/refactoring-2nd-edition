@@ -24,6 +24,11 @@ public class Statement {
 		return statementRenderer.renderPlainText();
 	}
 
+	public String htmlStatement() {
+		StatementRenderer statementRenderer = new StatementRenderer(createStatementData());
+		return statementRenderer.renderHtml();
+	}
+
 	private StatementData createStatementData() {
 		StatementData data = new StatementData();
 		data.setCustomer(invoice.customer());
@@ -108,6 +113,21 @@ public class Statement {
 			}
 			result += String.format("총액: %s%n", usd(statementData.getTotalAmount()));
 			result += String.format("적립 포인트: %s점%n", statementData.getTotalVolumeCredits());
+			return result;
+		}
+
+		public String renderHtml() {
+			var result = String.format("<h1>청구 내역 (고객명: %s)</h1>%n", statementData.getCustomer());
+			result += String.format("<table>%n");
+			result += String.format("<tr><th>연극</th><th>좌석 수</th><th>금액</th></tr>");
+			for (Performance performance : statementData.getPerformances()) {
+				result += String.format("  <tr><td>%s</td><td>(%s석)</td>", performance.getPlay().name(),
+					performance.getAudience());
+				result += String.format("<td>%s</td></tr>%n", usd(performance.getAmount()));
+			}
+			result += String.format("</table>%n");
+			result += String.format("<p>총액: <em>%s</em></p>%n", usd(statementData.getTotalAmount()));
+			result += String.format("<p>적립 포인트: <em>%s</em>점</p>%n", statementData.getTotalVolumeCredits());
 			return result;
 		}
 
